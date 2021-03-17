@@ -12,13 +12,16 @@ p = zeros(nr * 3);
 include("dataset.jl")
 regression_plot(; max = 20)
 
-opt = ADAMW(1.e-3, (0.9, 0.999), 1.e-4);
+opt = ADAMW(1.e-3, (0.9, 0.999), 1.e-3);
 
 include("sensBVP.jl")
 
 grad_max = 10^(2.5);
 
 include("callback.jl")
+
+# opt[1].eta = 1.e-4
+
 epochs = ProgressBar(iter:10000);
 l_epoch = ones(n_exp);
 grad_norm = ones(n_exp);
@@ -72,4 +75,4 @@ for epoch in epochs
     cb(p, loss, loss_val, g_norm; doplot = true)
 end
 
-regression_plot(; max = 20)
+regression_plot(; max = 100)

@@ -28,9 +28,10 @@ cb = function (p, loss, loss_val, g_norm; doplot=true)
         plt_all = plot([plt_loss, plt_grad, plt_pnorm]..., legend=:bottomleft);
         png(plt_all, string(fig_path, "/loss_grad"));
 
-        @save string(ckpt_path, "/mymodel.bson") p opt l_loss l_grad l_pnorm iter
-        if loss < l_min
+        @save string(ckpt_path, "/mymodel.bson") p opt l_loss l_loss_val l_grad l_pnorm iter
+        if loss_val < l_min
             @save string(ckpt_path, "/modelmin.bson") p opt l_loss l_loss_val l_grad l_pnorm iter
+            global l_min = loss_val
         end
     end
     iter += 1
