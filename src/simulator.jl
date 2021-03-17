@@ -1,5 +1,4 @@
 
-
 @inbounds function dudt!(du, u, p, t)
     Y = @view(u[1:ns])
     T = u[end]

@@ -5,12 +5,11 @@ include("visual.jl")
 Random.seed!(1);
 
 gas = CreateSolution(mech);
-const ns = gas.n_species;
-const nr = gas.n_reactions;
+ns = gas.n_species;
+nr = gas.n_reactions;
 
 p = zeros(nr * 3);
 include("dataset.jl")
-
 regression_plot(; max = 20)
 
 opt = ADAMW(1.e-3, (0.9, 0.999), 1.e-4);

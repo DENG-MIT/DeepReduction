@@ -1,7 +1,7 @@
-const nu = ns + 2;
-const np = length(p);
-const ind_diag = diagind(ones(nu - 1, nu - 1));
-const ones_nu = ones(nu - 1);
+nu = ns + 2;
+np = length(p);
+ind_diag = diagind(ones(nu - 1, nu - 1));
+ones_nu = ones(nu - 1);
 
 ng = 100;
 Fp100 = zeros(ng * nu, np);

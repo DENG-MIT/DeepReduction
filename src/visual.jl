@@ -1,4 +1,5 @@
 function regression_plot(;max=10)
+    @printf("...regression plot ...\n")
     l_idt = zeros(minimum([max, n_exp]), 3)
     for i_exp in 1:minimum([max, n_exp])
         local T0 = conds[i_exp, 1]
@@ -6,7 +7,6 @@ function regression_plot(;max=10)
         local phi = conds[i_exp, 3]
         local idt0 = conds[i_exp, 4]
         idt = f_idt(T0, P, phi, p; dT=dT)
-        check_sol(T0, P, phi, p; i_exp=i_exp)
         @printf("%d idt %.2e idt0 %.2e \n", i_exp, idt, idt0)
         _idt0 = f_idt(T0, P, phi, p .* 0.0; dT=dT)
         l_idt[i_exp, :] .= [idt0, idt, _idt0]
