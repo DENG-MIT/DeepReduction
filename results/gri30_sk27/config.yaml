@@ -1,0 +1,24 @@
+mech: "mechanism/gri30_sk27.yaml"
+fuel: "CH4"
+fuel2air: 2.0
+oxygen: "O2"
+inert: "N2"
+dTign: 200
+
+lr: 0.001
+weight_decay: 1.e-6
+n_plot: 1
+
+n_exp: 10
+
+pressure:
+  lb: 20.0
+  ub: 60.0
+
+temperature:
+  lb: 1100.0
+  ub: 1600.0
+
+phi:
+  lb: 0.5
+  ub: 1.5
