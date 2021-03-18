@@ -7,6 +7,9 @@ function regression_plot(;max=10)
         local phi = conds[i_exp, 3]
         local idt0 = conds[i_exp, 4]
         idt = f_idt(T0, P, phi, p; dT=dT)
+        if i_exp < max
+            check_sol(T0, P, phi, p; i_exp=i_exp)
+        end
         @printf("%d idt %.2e idt0 %.2e \n", i_exp, idt, idt0)
         _idt0 = f_idt(T0, P, phi, p .* 0.0; dT=dT)
         l_idt[i_exp, :] .= [idt0, idt, _idt0]
@@ -42,4 +45,19 @@ function check_sol(T0, P, phi, p; i_exp=0)
     pltsum = plot(l_plt..., legend=false, framestyle=:box, xscale=:log10)
 
     png(pltsum, string(fig_path, "/conditions/sol_$i_exp"))
+end
+
+function plot_loss()
+    plt_loss = plot(l_loss, yscale=:log10, label="train");
+    plot!(plt_loss, l_loss_val, yscale=:log10, label="val");
+    plt_grad = plot(l_grad, yscale=:log10, label="grad_norm");
+    plt_pnorm = plot(l_pnorm .+ 1.e-8, yscale=:identity, label="p_norm");
+    xlabel!(plt_loss, "Epoch");
+    xlabel!(plt_grad, "Epoch");
+    xlabel!(plt_pnorm, "Epoch");
+    ylabel!(plt_loss, "Loss");
+    ylabel!(plt_grad, "Grad Norm");
+    ylabel!(plt_pnorm, "p Norm");
+    plt_all = plot([plt_loss, plt_grad, plt_pnorm]..., legend=:bottomleft);
+    png(plt_all, string(fig_path, "/loss_grad"));
 end

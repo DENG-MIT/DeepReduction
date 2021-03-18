@@ -15,22 +15,11 @@ cb = function (p, loss, loss_val, g_norm; doplot=true)
     if doplot & (iter % n_plot == 0)
         regression_plot(;max=10)
 
-        plt_loss = plot(l_loss, yscale=:log10, label="train");
-        plot!(plt_loss, l_loss_val, yscale=:log10, label="val");
-        plt_grad = plot(l_grad, yscale=:log10, label="grad_norm");
-        plt_pnorm = plot(l_pnorm .+ 1.e-8, yscale=:log10, label="p_norm");
-        xlabel!(plt_loss, "Epoch");
-        xlabel!(plt_grad, "Epoch");
-        xlabel!(plt_pnorm, "Epoch");
-        ylabel!(plt_loss, "Loss");
-        ylabel!(plt_grad, "Grad Norm");
-        ylabel!(plt_pnorm, "p Norm");
-        plt_all = plot([plt_loss, plt_grad, plt_pnorm]..., legend=:bottomleft);
-        png(plt_all, string(fig_path, "/loss_grad"));
+        plot_loss()
 
         @save string(ckpt_path, "/mymodel.bson") p opt l_loss l_loss_val l_grad l_pnorm iter
         if loss_val < l_min
-            @save string(ckpt_path, "/modelmin.bson") p opt l_loss l_loss_val l_grad l_pnorm iter
+            @save string(ckpt_path, "/model_$(length(l_loss)).bson") p opt l_loss l_loss_val l_grad l_pnorm iter
             global l_min = loss_val
         end
     end
@@ -41,4 +30,8 @@ end
 if is_restart
     @load string(ckpt_path, "/mymodel.bson") p opt l_loss l_loss_val l_grad l_pnorm iter
     iter += 1
+end
+
+function load_model(epoch)
+    @save string(ckpt_path, "/model_$(epoch).bson") p opt l_loss l_loss_val l_grad l_pnorm iter
 end

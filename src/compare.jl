@@ -20,7 +20,7 @@ n_exp = 20
 conds = zeros(n_exp, 4)
 conds[:, 1] .= range(1000.0, stop=1600, length=n_exp)
 conds[:, 2] .= 40.0
-conds[:, 3] .= 0.8
+conds[:, 3] .= 0.9
 
 # dir_master = conf["master"]
 # @load string(ckpt_path, "/../../", dir_master, "/conds.bson") conds
@@ -32,13 +32,18 @@ p = zeros(nr * 3);
 conds = get_conds!(conds)
 conds_master = deepcopy(conds)
 
-gas = CreateSolution("mechanism/gri30_sk22.yaml");
+gas = CreateSolution("mechanism/gri30_sk23.yaml");
 ns = gas.n_species;
 nr = gas.n_reactions;
 p = zeros(nr * 3);
 
 conds = get_conds!(conds)
 conds_sk = deepcopy(conds)
+
+# gas = CreateSolution("mechanism/gri30_sk23_op.yaml");
+# ns = gas.n_species;
+# nr = gas.n_reactions;
+# p = zeros(nr * 3);
 
 @load string(ckpt_path, "/../p.bson") p
 conds = get_conds!(conds)
@@ -52,9 +57,9 @@ else
                 label="gri30")
 end
 Plots.scatter!(plt, 1000 ./ conds_sk[:, 1], conds_sk[:, 4],
-            label="sk22")
+            label="sk23")
 Plots.scatter!(plt, 1000 ./ conds_sk_op[:, 1], conds_sk_op[:, 4],
-            label="sk22_op")
+            label="sk23_op")
 xlabel!(plt, "1000 / T [K]")
 ylabel!(plt, "IDT [s]")
 plot!(plt, yscale=:log10, legend=:left)

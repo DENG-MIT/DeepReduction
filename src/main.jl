@@ -1,6 +1,7 @@
 include("header.jl")
 include("simulator.jl")
 include("visual.jl")
+include("updateyaml.jl")
 
 gas = CreateSolution(mech);
 ns = gas.n_species;
@@ -11,7 +12,7 @@ p = zeros(nr * 3);
 include("dataset.jl")
 regression_plot(; max = 50)
 
-opt = ADAMW(1.e-3, (0.9, 0.999), 1.e-4);
+opt = ADAMW(1.e-4, (0.9, 0.999), 1.e-4);
 
 include("sensBVP.jl")
 
@@ -23,7 +24,7 @@ include("callback.jl")
 
 ind_sl = Int64.(conf["ind_sl"])
 
-epochs = ProgressBar(iter:100);
+epochs = ProgressBar(iter:5);
 l_epoch = ones(n_exp);
 grad_norm = ones(n_exp);
 for epoch in epochs
@@ -79,6 +80,10 @@ for epoch in epochs
     cb(p, loss, loss_val, g_norm; doplot = true)
 end
 
-# @load string(ckpt_path, "/modelmin.bson") p opt l_loss l_loss_val l_grad l_pnorm iter
+# @load string(ckpt_path, "/../p.bson") p
+
 @save string(ckpt_path, "/../p.bson") p
+
 regression_plot(; max = 50)
+
+updateyaml(mech, p)

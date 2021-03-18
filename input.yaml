@@ -1,5 +1,3 @@
 is_restart: false
 # expr_name: results/gri30
-# expr_name: results/gri30_sk27
-# expr_name: results/gri30_sk26
-expr_name: results/gri30_sk22
+expr_name: results/gri30_sk23

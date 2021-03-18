@@ -3,7 +3,7 @@ fuel: "CH4"
 fuel2air: 2.0
 oxygen: "O2"
 inert: "N2"
-dTign: 200
+dTign: 400
 is_skeletal: false
 master: "gri30"
 
@@ -11,14 +11,14 @@ lr: 0.001
 weight_decay: 1.e-6
 n_plot: 1
 
-n_exp: 100
+n_exp: 500
 
 pressure:
-  lb: 5.0
+  lb: 1.0
   ub: 60.0
 
 temperature:
-  lb: 1010.0
+  lb: 1100.0
   ub: 2000.0
 
 phi:
