@@ -1,10 +1,13 @@
-mech: "mechanism/gri30.yaml"
+mech: "mechanism/gri30_sk26.yaml"
 fuel: "CH4"
 fuel2air: 2.0
 oxygen: "O2"
 inert: "N2"
 dTign: 200
-is_skeletal: false
+ind_sl: [25, 21, 62, 71, 111, 102, 103, 104, 105, 106, 107, 108, 109]
+# 25, 21, 62, 71, 111 for flame speed
+# 102:109 for NO chemistry
+is_skeletal: true
 master: "gri30"
 
 lr: 0.001

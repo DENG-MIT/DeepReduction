@@ -2,17 +2,16 @@ include("header.jl")
 include("simulator.jl")
 include("visual.jl")
 
-Random.seed!(1);
-
 gas = CreateSolution(mech);
 ns = gas.n_species;
 nr = gas.n_reactions;
 
 p = zeros(nr * 3);
-include("dataset.jl")
-regression_plot(; max = 20)
 
-opt = ADAMW(1.e-3, (0.9, 0.999), 1.e-3);
+include("dataset.jl")
+regression_plot(; max = 50)
+
+opt = ADAMW(1.e-3, (0.9, 0.999), 1.e-4);
 
 include("sensBVP.jl")
 
@@ -22,13 +21,15 @@ include("callback.jl")
 
 # opt[1].eta = 1.e-4
 
-epochs = ProgressBar(iter:10000);
+ind_sl = Int64.(conf["ind_sl"])
+
+epochs = ProgressBar(iter:100);
 l_epoch = ones(n_exp);
 grad_norm = ones(n_exp);
 for epoch in epochs
     global p
-    l_epoch .= 0.0
-    grad_norm .= 0.0
+    l_epoch .= 1.0
+    grad_norm .= 1.0
     for i_exp in randperm(n_exp)
         T0 = conds[i_exp, 1]
         global P = conds[i_exp, 2] * one_atm
@@ -58,7 +59,10 @@ for epoch in epochs
             if grad_norm[i_exp] > grad_max
                 @. grad = grad / grad_norm[i_exp] * grad_max
             end
-            update!(opt, p, grad)
+            grad[ind_sl] .= 0.0
+            if (epoch > 1)
+                update!(opt, p, grad)
+            end
         end
     end
     loss = mean(l_epoch[1:n_train])
@@ -75,4 +79,6 @@ for epoch in epochs
     cb(p, loss, loss_val, g_norm; doplot = true)
 end
 
-regression_plot(; max = 100)
+# @load string(ckpt_path, "/modelmin.bson") p opt l_loss l_loss_val l_grad l_pnorm iter
+@save string(ckpt_path, "/../p.bson") p
+regression_plot(; max = 50)

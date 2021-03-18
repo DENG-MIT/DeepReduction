@@ -18,7 +18,7 @@ cb = function (p, loss, loss_val, g_norm; doplot=true)
         plt_loss = plot(l_loss, yscale=:log10, label="train");
         plot!(plt_loss, l_loss_val, yscale=:log10, label="val");
         plt_grad = plot(l_grad, yscale=:log10, label="grad_norm");
-        plt_pnorm = plot(l_pnorm, yscale=:log10, label="p_norm");
+        plt_pnorm = plot(l_pnorm .+ 1.e-8, yscale=:log10, label="p_norm");
         xlabel!(plt_loss, "Epoch");
         xlabel!(plt_grad, "Epoch");
         xlabel!(plt_pnorm, "Epoch");

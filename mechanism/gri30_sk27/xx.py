@@ -1,0 +1,1 @@
+python -m cantera.ck2yaml --input=chem.inp --thermo=therm.dat --transport=tran.dat

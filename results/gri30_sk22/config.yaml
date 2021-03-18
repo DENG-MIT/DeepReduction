@@ -1,10 +1,11 @@
-mech: "mechanism/gri30.yaml"
+mech: "mechanism/gri30_sk22.yaml"
 fuel: "CH4"
 fuel2air: 2.0
 oxygen: "O2"
 inert: "N2"
 dTign: 200
-is_skeletal: false
+ind_sl: [21, 22, 23, 24, 56, 63]
+is_skeletal: true
 master: "gri30"
 
 lr: 0.001
