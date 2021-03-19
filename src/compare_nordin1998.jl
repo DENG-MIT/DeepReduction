@@ -18,19 +18,19 @@ end
 conds = zeros(20, 4)
 conds[:, 1] .= range(700.0, stop=1600, length=size(conds)[1])
 conds[:, 2] .= 40.0
-conds[:, 3] .= 0.9
+conds[:, 3] .= 0.8
 
 # dir_master = conf["master"]
 # @load string(ckpt_path, "/../../", dir_master, "/conds.bson") conds
 
-gas = CreateSolution("mechanism/gri30.yaml");
+gas = CreateSolution("mechanism/mech_41s168r.yaml");
 ns = gas.n_species;
 nr = gas.n_reactions;
 p = zeros(nr * 3);
 conds = get_conds!(conds)
 conds_master = deepcopy(conds)
 
-gas = CreateSolution("mechanism/gri30_sk23.yaml");
+gas = CreateSolution("mechanism/mech_34s121r.yaml");
 ns = gas.n_species;
 nr = gas.n_reactions;
 p = zeros(nr * 3);
@@ -49,18 +49,18 @@ conds_sk_op = deepcopy(conds)
 
 if std(conds[:, 2]) < 1.e-3
     plt = Plots.plot(1000 ./ conds_master[:, 1], conds_master[:, 4],
-                lw=1, ls=:solid, label="gri30")
+                lw=1, ls=:solid, label="Nordin_41s")
 else
     plt = Plots.scatter(1000 ./ conds_master[:, 1], conds_master[:, 4],
-                label="gri30")
+                label="Nordin_41s")
 end
 Plots.scatter!(plt, 1000 ./ conds_sk[:, 1], conds_sk[:, 4],
-            label="sk23")
+            label="sk34")
 Plots.scatter!(plt, 1000 ./ conds_sk_op[:, 1], conds_sk_op[:, 4],
-            label="sk23_op")
+            label="sk34_op")
 xlabel!(plt, "1000 / T [K]")
 ylabel!(plt, "IDT [s]")
 plot!(plt, yscale=:log10, legend=:left)
-title!(plt, @sprintf("p=%.1f atm phi=%.1f CH4:0.85/C2H4:0.1/C3H8:0.05",
+title!(plt, @sprintf("p=%.1f atm phi=%.1f",
         conds[1, 2], conds[1, 3]))
 png(plt, string(fig_path, "/regression_T"))

@@ -1,26 +1,26 @@
-mech: "mechanism/gri30_sk23.yaml"
-fuel: "CH4"
-fuel2air: 2.0
+mech: "mechanism/nordin1998_32s.yaml"
+fuel: "C7H16"
+fuel2air: 11.0
 oxygen: "O2"
 inert: "N2"
 dTign: 400
-ind_sl: [25, 21, 37, 62, 37, 9, 71, 98, 40, 99]
+ind_sl: [45, 41, 92, 93, 36, 82]
 is_skeletal: true
-master: "gri30"
+master: "nordin41s"
 
 lr: 0.001
 weight_decay: 1.e-6
 n_plot: 1
 
-n_exp: 500
+n_exp: 50
 
 pressure:
   lb: 1.0
   ub: 60.0
 
 temperature:
-  lb: 1100.0
-  ub: 2000.0
+  lb: 700.0
+  ub: 1800.0
 
 phi:
   lb: 0.5

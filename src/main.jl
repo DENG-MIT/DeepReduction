@@ -3,6 +3,7 @@ include("simulator.jl")
 include("visual.jl")
 include("updateyaml.jl")
 
+# include("naturalgas.jl")
 gas = CreateSolution(mech);
 ns = gas.n_species;
 nr = gas.n_reactions;
@@ -24,7 +25,7 @@ include("callback.jl")
 
 ind_sl = Int64.(conf["ind_sl"])
 
-epochs = ProgressBar(iter:5);
+epochs = ProgressBar(iter:100);
 l_epoch = ones(n_exp);
 grad_norm = ones(n_exp);
 for epoch in epochs
@@ -36,7 +37,7 @@ for epoch in epochs
         global P = conds[i_exp, 2] * one_atm
         phi = conds[i_exp, 3]
         idt0 = conds[i_exp, 4]
-        ts, pred = get_idt(T0, P, phi, p; dT = dT)
+        ts, pred = get_idt(T0, P, phi, p; dT = dT, tfinal=10.0)
         ngfull = length(ts)
         # ts, pred = downsampling(ts, pred; dT=0.1)
         idt = ts[end]
@@ -44,7 +45,7 @@ for epoch in epochs
         @printf("%d ng: %d (%d) idt %.2e idt0 %.2e \n",
                 i_exp, length(ts), ngfull, idt, idt0)
 
-        if (idt < 0.99) & (length(ts) < 2000) & (i_exp <= n_train)
+        if (idt < 9.9) & (length(ts) < 2000) & (i_exp <= n_train)
             if length(ts) < 100
                 grad = 2 * log(idt / idt0) * sensBVP!(Fy100, Fp100, ts, pred, p)
             elseif length(ts) < 200
@@ -61,7 +62,7 @@ for epoch in epochs
                 @. grad = grad / grad_norm[i_exp] * grad_max
             end
             grad[ind_sl] .= 0.0
-            if (epoch > 1)
+            if (iter > 1)
                 update!(opt, p, grad)
             end
         end
