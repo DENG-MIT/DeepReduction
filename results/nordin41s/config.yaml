@@ -18,9 +18,9 @@ pressure:
   ub: 60.0
 
 temperature:
-  lb: 700.0
+  lb: 850.0
   ub: 1800.0
 
 phi:
   lb: 0.5
-  ub: 1.8
+  ub: 1.5

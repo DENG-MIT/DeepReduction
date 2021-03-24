@@ -1,5 +1,6 @@
 using OrdinaryDiffEq, Flux, Plots
 using Sundials
+using DiffEqSensitivity
 using ForwardDiff
 using ForwardDiff: jacobian, jacobian!
 using LinearAlgebra
@@ -14,8 +15,6 @@ using Arrhenius
 using YAML
 using Base.Threads
 using LatinHypercubeSampling
-using DiffEqSensitivity
-using SharedArrays
 
 ENV["GKSwstype"] = "100"
 

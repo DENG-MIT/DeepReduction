@@ -5,8 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Simulation parameters
-p = ct.one_atm * 40  # pressure [Pa]
-Tin = 800.0  # unburned gas temperature [K]
+p = ct.one_atm * 10  # pressure [Pa]
+Tin = 500.0  # unburned gas temperature [K]
 
 n_exp = 6
 conds = np.zeros((n_exp, 10))
@@ -62,7 +62,7 @@ plt.plot(conds[:, 0], conds[:, 3], 's', label='sk34_op')
 # plt.plot(conds[:, 0], conds[:, 5], 's', label='sk27')
 plt.xlabel('Equivilence ratio')
 plt.ylabel('Flame Speed [cm/s]')
-plt.title('{:.1f} atm, Tu 300 K CH4:0.85/C2H6:0.1/C3H8:0.05//Air'.format(p/ct.one_atm))
+plt.title('{:.1f} atm, Tu {:.0f} K C7H16/Air'.format(p/ct.one_atm, Tin))
 plt.legend(loc='best')
 plt.savefig('flamespeed.png')
 plt.show()

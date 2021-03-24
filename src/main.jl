@@ -13,7 +13,7 @@ p = zeros(nr * 3);
 include("dataset.jl")
 regression_plot(; max = 50)
 
-opt = ADAMW(1.e-4, (0.9, 0.999), 1.e-4);
+opt = ADAMW(1.e-3, (0.9, 0.999), 1.e-4);
 
 include("sensBVP.jl")
 
@@ -46,17 +46,18 @@ for epoch in epochs
                 i_exp, length(ts), ngfull, idt, idt0)
 
         if (idt < 9.9) & (length(ts) < 2000) & (i_exp <= n_train)
-            if length(ts) < 100
-                grad = 2 * log(idt / idt0) * sensBVP!(Fy100, Fp100, ts, pred, p)
-            elseif length(ts) < 200
-                grad = 2 * log(idt / idt0) * sensBVP!(Fy200, Fp200, ts, pred, p)
-            elseif length(ts) < 300
-                grad = 2 * log(idt / idt0) * sensBVP!(Fy300, Fp300, ts, pred, p)
-            elseif length(ts) < 400
-                grad = 2 * log(idt / idt0) * sensBVP!(Fy400, Fp400, ts, pred, p)
-            else
-                grad = 2 * log(idt / idt0) * sensBVP(ts, pred, p)
-            end
+            # if length(ts) < 100
+            #     grad = 2 * log(idt / idt0) * sensBVP!(Fy100, Fp100, ts, pred, p)
+            # elseif length(ts) < 200
+            #     grad = 2 * log(idt / idt0) * sensBVP!(Fy200, Fp200, ts, pred, p)
+            # elseif length(ts) < 300
+            #     grad = 2 * log(idt / idt0) * sensBVP!(Fy300, Fp300, ts, pred, p)
+            # elseif length(ts) < 400
+            #     grad = 2 * log(idt / idt0) * sensBVP!(Fy400, Fp400, ts, pred, p)
+            # else
+            #     grad = 2 * log(idt / idt0) * sensBVP_mthread(ts, pred, p)
+            # end
+            grad = 2 * log(idt / idt0) * sensBVP_mthread(ts, pred, p)
             grad_norm[i_exp] = norm(grad, 2)
             if grad_norm[i_exp] > grad_max
                 @. grad = grad / grad_norm[i_exp] * grad_max

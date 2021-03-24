@@ -3,18 +3,18 @@ np = length(p);
 ind_diag = diagind(ones(nu - 1, nu - 1));
 ones_nu = ones(nu - 1);
 
-ng = 100;
-Fp100 = zeros(ng * nu, np);
-Fy100 = BandedMatrix(zeros(ng * nu, ng * nu), (nu, nu));
-ng = 200;
-Fp200 = zeros(ng * nu, np);
-Fy200 = BandedMatrix(zeros(ng * nu, ng * nu), (nu, nu));
-ng = 300;
-Fp300 = zeros(ng * nu, np);
-Fy300 = BandedMatrix(zeros(ng * nu, ng * nu), (nu, nu));
-ng = 400;
-Fp400 = zeros(ng * nu, np);
-Fy400 = BandedMatrix(zeros(ng * nu, ng * nu), (nu, nu));
+# ng = 100;
+# Fp100 = zeros(ng * nu, np);
+# Fy100 = BandedMatrix(Zeros(ng * nu, ng * nu), (nu, nu));
+# ng = 200;
+# Fp200 = zeros(ng * nu, np);
+# Fy200 = BandedMatrix(Zeros(ng * nu, ng * nu), (nu, nu));
+# ng = 300;
+# Fp300 = zeros(ng * nu, np);
+# Fy300 = BandedMatrix(Zeros(ng * nu, ng * nu), (nu, nu));
+# ng = 400;
+# Fp400 = zeros(ng * nu, np);
+# Fy400 = BandedMatrix(Zeros(ng * nu, ng * nu), (nu, nu));
 
 @inbounds function residual(ts, y, p, u0, Tign, idt)
     ng = length(ts)
@@ -43,7 +43,7 @@ end
 @inbounds function sensBVP(ts, pred, p)
     local ng = length(ts)
     Fp_ = zeros(ng * nu, np)
-    Fy_ = BandedMatrix(zeros(ng * nu, ng * nu), (nu, nu))
+    Fy_ = BandedMatrix(Zeros(ng * nu, ng * nu), (nu, nu))
     return sensBVP!(Fy_, Fp_, ts, pred, p)
 end
 
@@ -83,32 +83,38 @@ end
 end
 
 function sensBVP_mthread(ts, pred, p)
-    """
-    Currently not maintaineds
-    """
-    local idt = ts[end]
-    local Tign = pred[end, end]
-    local ng = length(ts)
-    Fy = BandedMatrix(zeros(ng * nu, ng * nu), (nu, nu))
-    Fp = SharedArray{Float64}(ng * nu, np)
+    idt = ts[end]
+    Tign = pred[end, end]
+    ng = length(ts)
+    Fy = BandedMatrix(Zeros(ng * nu, ng * nu), (nu, nu));
+    Fp = zeros(ng * nu, np)
     i = 1
     i_F = 1 + (i - 1) * nu:i * nu - 1
     @view(Fy[i_F, i_F])[ind_diag] .= ones_nu
     Fy[i * nu, i * nu] = -1.0
     Fy[i * nu, (i + 1) * nu] = 1.0
-    du = similar(@view(pred[:, i]))
 
     dts = @views(ts[2:end] .- ts[1:end - 1]) ./ idt
+
     @threads for i = 2:ng
-        @view(Fp[1 + (i - 1) * nu:i * nu - 1, :]) .= jacobian((du, x) ->
-                                        dudt!(du, @view(pred[:, i]), x, 0.0),
-                                        du, p)::Array{Float64,2} .* (-idt)
-    end
-    for i = 2:ng
         u = @view(pred[:, i])
+        du = similar(u)
+        i_F = 1 + (i - 1) * nu:i * nu - 1
+        @view(Fp[i_F, :]) .= jacobian((du, x) -> dudt!(du, u, x, 0.0),
+                                    du, p)::Array{Float64,2} .* (-idt)
+    end
+    @threads for i = 2:ng
+        u = @view(pred[:, i])
+        du = similar(u)
         i_F = 1 + (i - 1) * nu:i * nu - 1
         @view(Fy[i_F, i_F]) .= jacobian((du, x) -> dudt!(du, x, p, 0.0),
-                                         du, u)::Array{Float64,2} .* (-idt)
+                                    du, u)::Array{Float64,2} .* (-idt)
+    end
+
+    for i = 2:ng
+        u = @view(pred[:, i])
+        du = similar(u)
+        i_F = 1 + (i - 1) * nu:i * nu - 1
         @view(Fy[i_F, i * nu]) .= - dudt!(du, u, p, 0.0)
         @view(Fy[i_F, i_F])[ind_diag] .+= ones_nu ./ (dts[i - 1])
         @view(Fy[i_F, i_F .- nu])[ind_diag] .+= ones_nu ./ (-dts[i - 1])
@@ -119,7 +125,7 @@ function sensBVP_mthread(ts, pred, p)
             Fy[i * nu, i * nu - 1] = 1.0
         end
     end
-    dydp = - @views(Fy[1:ng * nu, 1:ng * nu] \ Fp[1:ng * nu, :])
+    dydp = - Fy \ Fp
     return @view(dydp[end, :]) ./ idt
 end
 
