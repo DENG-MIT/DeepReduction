@@ -35,5 +35,5 @@ function updateyaml(mech, p)
         end
     end
 
-    YAML.write_file(mech[1:end-5] * "_op.yaml", yaml)
+    YAML.write_file(mech[1:end - 5] * "_op.yaml", yaml)
 end

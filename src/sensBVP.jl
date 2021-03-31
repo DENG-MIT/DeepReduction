@@ -3,19 +3,6 @@ np = length(p);
 ind_diag = diagind(ones(nu - 1, nu - 1));
 ones_nu = ones(nu - 1);
 
-# ng = 100;
-# Fp100 = zeros(ng * nu, np);
-# Fy100 = BandedMatrix(Zeros(ng * nu, ng * nu), (nu, nu));
-# ng = 200;
-# Fp200 = zeros(ng * nu, np);
-# Fy200 = BandedMatrix(Zeros(ng * nu, ng * nu), (nu, nu));
-# ng = 300;
-# Fp300 = zeros(ng * nu, np);
-# Fy300 = BandedMatrix(Zeros(ng * nu, ng * nu), (nu, nu));
-# ng = 400;
-# Fp400 = zeros(ng * nu, np);
-# Fy400 = BandedMatrix(Zeros(ng * nu, ng * nu), (nu, nu));
-
 @inbounds function residual(ts, y, p, u0, Tign, idt)
     ng = length(ts)
     pred = reshape(y, :, ng)
@@ -129,7 +116,6 @@ function sensBVP_mthread(ts, pred, p)
     return @view(dydp[end, :]) ./ idt
 end
 
-# TODO: better exploit the band sparsity structure of Jacobian
 @inbounds function sensBVP_AD(ts, pred, p)
     local idt = ts[end]
     local Tign = pred[end, end]
