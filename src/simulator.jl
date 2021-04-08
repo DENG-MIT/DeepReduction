@@ -10,7 +10,7 @@
     h_mole = get_H(gas, T, Y, X)
     S0 = get_S(gas, T, P, X)
     _p = reshape(p, nr, 3)
-    kp = @. @views(exp(_p[:, 1] + _p[:, 2] * log(T) - _p[:, 3] * 4184.0 / R / T))
+    kp = @. (exp.(_p[:, 1] + _p[:, 2] * log(T) - _p[:, 3] * 4184.0 / R / T))
     # kp = exp.(p)
     qdot = wdot_func(gas.reaction, T, C, S0, h_mole; get_qdot=true) .* kp
     wdot = gas.reaction.vk * qdot
@@ -45,7 +45,7 @@ function get_idt(T0, P, phi, p;
     _cb = DiscreteCallback(condition, affect!)
 
     sol = solve(prob, CVODE_BDF(), saveat=saveat,
-                reltol=1e-6, abstol=1e-9, callback=_cb);
+                reltol=1e-9, abstol=1e-12, callback=_cb);
     if doplot
         plot_sol(sol)
     end
@@ -66,7 +66,7 @@ function f_idt(T0, P, phi, p; dT=400, dTabort=800, tfinal=1.0, saveat=[])
     _cb = DiscreteCallback(condition, affect!)
 
     sol = solve(prob, CVODE_BDF(), saveat=saveat,
-                reltol=1e-6, abstol=1e-9, callback=_cb);
+                reltol=1e-9, abstol=1e-12, callback=_cb);
 
     ind_ign = get_ind_ign(sol; dT=dT)
 
@@ -76,7 +76,7 @@ end
 sensealg = ForwardDiffSensitivity()
 function fsol(p, idt)
     prob = make_prob(T0, P, phi, p; tfinal=idt)
-    sol = solve(prob, Trapezoid(), reltol=1e-6, abstol=1e-9, sensealg=sensealg)
+    sol = solve(prob, Trapezoid(), reltol=1e-9, abstol=1e-12, sensealg=sensealg)
     return sol[end, end]
 end
 

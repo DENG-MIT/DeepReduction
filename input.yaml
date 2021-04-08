@@ -3,4 +3,5 @@ is_restart: false
 # expr_name: results/gri30_sk23
 # expr_name: results/nordin41s
 # expr_name: results/nordin41s_sk34
-expr_name: results/nordin41s_sk32
+# expr_name: results/nordin41s_sk32
+expr_name: results/JetA2

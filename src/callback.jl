@@ -33,5 +33,5 @@ if is_restart
 end
 
 function load_model(epoch)
-    @save string(ckpt_path, "/model_$(epoch).bson") p opt l_loss l_loss_val l_grad l_pnorm iter
+    @load string(ckpt_path, "/model_$(epoch).bson") p opt l_loss l_loss_val l_grad l_pnorm iter
 end

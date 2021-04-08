@@ -112,7 +112,7 @@ function sensBVP_mthread(ts, pred, p)
             Fy[i * nu, i * nu - 1] = 1.0
         end
     end
-    dydp = - Fy \ Fp
+    dydp = - Fy \ sparse(Fp)
     return @view(dydp[end, :]) ./ idt
 end
 

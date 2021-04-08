@@ -15,6 +15,8 @@ using Arrhenius
 using YAML
 using Base.Threads
 using LatinHypercubeSampling
+using DelimitedFiles
+using SparseArrays
 
 ENV["GKSwstype"] = "100"
 

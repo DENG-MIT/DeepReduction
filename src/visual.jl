@@ -3,7 +3,7 @@ function regression_plot(;max=10)
     l_idt = zeros(minimum([max, n_exp]), 3)
     for i_exp in 1:minimum([max, n_exp])
         local T0 = conds[i_exp, 1]
-        global P = conds[i_exp, 2] * one_atm
+        local P = conds[i_exp, 2] * one_atm
         local phi = conds[i_exp, 3]
         local idt0 = conds[i_exp, 4]
         idt = f_idt(T0, P, phi, p; dT=dT)
